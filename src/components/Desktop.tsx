@@ -7,7 +7,7 @@ import {
   Wangimg130,
   WindowsExplorer,
 } from '@react95/icons';
-import { useGetMoviesQuery } from '@services/movies';
+import { useGetGenresQuery, useGetMoviesQuery } from '@services/movies';
 import { Shortcut } from './Shortcut';
 
 const getModalDimensions = () => {
@@ -29,6 +29,8 @@ const getModalDimensions = () => {
 
 export const Desktop = () => {
   const { data } = useGetMoviesQuery();
+  const { data: genres } = useGetGenresQuery();
+
   const [moviesExplorerModal, setMoviesExplorerModal] = useState(true);
 
   const dimmensions = useMemo(getModalDimensions, []);
@@ -41,8 +43,10 @@ export const Desktop = () => {
     setMoviesExplorerModal(false);
   };
 
+  console.log({ genres });
+
   const treeData = useMemo(() => {
-    if (data?.movies) {
+    if (data?.movies && genres) {
       const allMovies = data?.movies.map((movie, index) => {
         return {
           id: index,
@@ -50,6 +54,8 @@ export const Desktop = () => {
           icon: <Mplayer11 variant="16x16_4" />,
         };
       });
+
+      // const allGenres = genres
 
       return [
         {
@@ -61,7 +67,7 @@ export const Desktop = () => {
     }
 
     return [];
-  }, [data?.movies]);
+  }, [data?.movies, genres]);
 
   return (
     <>

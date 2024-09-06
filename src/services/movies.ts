@@ -8,21 +8,18 @@ import GetGenres from '@graphql/genres.graphql';
 
 import { MOVIES_URL } from './constants';
 
-export type Genre = {
+export type GenrePreview = {
   id: string;
   title: string;
+};
+
+export type Genre = GenrePreview & {
   movies: Movie[];
 };
 
-export type GenreWithoutMovies = {
-  id: string;
-  title: string;
-};
+export type MoviePreview = { title: string; id: string; posterUrl: string };
 
-export type Movie = {
-  id: string;
-  title: string;
-  posterUrl: string;
+export type Movie = MoviePreview & {
   summary: string;
   duration: string;
   directors: string[];
@@ -33,10 +30,8 @@ export type Movie = {
   bestRating: number;
   worstRating: number;
   writers: string[];
-  genres: GenreWithoutMovies[];
+  genres: GenrePreview[];
 };
-
-export type MoviePreview = { title: string; id: string; posterUrl: string };
 
 export type Pagination = {
   totalPages: number;
@@ -49,9 +44,21 @@ export type MovieConnection = {
   pagination: Pagination;
 };
 
+export type GenreConnection = {
+  genres: GenrePreview[];
+  pagination: Pagination;
+};
+
 type MovieQueryResult = {
   movies: {
     nodes: MoviePreview[];
+    pagination: Pagination;
+  };
+};
+
+type GenreQueryResult = {
+  genres: {
+    nodes: Genre[];
     pagination: Pagination;
   };
 };
@@ -86,10 +93,18 @@ export const moviesApi = createApi({
         };
       },
     }),
-    getGenres: builder.query<Genre[], void>({
+    getGenres: builder.query<GenreConnection, void>({
       query: () => ({
         document: GetGenres,
       }),
+      transformResponse: (response: GenreQueryResult) => {
+        const { nodes, pagination } = response.genres;
+
+        return {
+          genres: nodes,
+          pagination,
+        };
+      },
     }),
   }),
 });
