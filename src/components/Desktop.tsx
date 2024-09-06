@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
-import { Frame, List, Modal, TaskBar } from '@react95/core';
+import { Frame, List, Modal, TaskBar, Tree } from '@react95/core';
 import {
   Camera,
+  Mplayer11,
   ReaderClosed,
   Wangimg130,
   WindowsExplorer,
@@ -35,9 +36,32 @@ export const Desktop = () => {
   const showMoviesExplorer = () => {
     setMoviesExplorerModal(true);
   };
+
   const closeMoviesExplorer = () => {
     setMoviesExplorerModal(false);
   };
+
+  const treeData = useMemo(() => {
+    if (data?.movies) {
+      const allMovies = data?.movies.map((movie, index) => {
+        return {
+          id: index,
+          label: movie.title,
+          icon: <Mplayer11 variant="16x16_4" />,
+        };
+      });
+
+      return [
+        {
+          id: 0,
+          label: 'Movies',
+          children: allMovies,
+        },
+      ];
+    }
+
+    return [];
+  }, [data?.movies]);
 
   return (
     <>
@@ -64,7 +88,18 @@ export const Desktop = () => {
             w={`${dimmensions.width}px`}
             h={`${dimmensions.height}px`}
           >
-            <Frame boxShadow="$in" bg="white" w="260px" mr="$6"></Frame>
+            <Frame boxShadow="$in" bg="white" w="40%" mr="$6">
+              {treeData && (
+                <Tree
+                  data={treeData}
+                  root={{
+                    id: 0,
+                    label: 'ThisTube',
+                    icon: <Camera variant="16x16_4" />,
+                  }}
+                />
+              )}
+            </Frame>
             <Frame boxShadow="$in" bg="white" w="100%" overflow="auto">
               <Frame
                 as="ul"
