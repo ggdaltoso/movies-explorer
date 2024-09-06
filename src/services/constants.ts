@@ -1,1 +1,1 @@
-export const MOVIES_URL = import.meta.env.MOVIES_URL;
+export const MOVIES_URL = import.meta.env.VITE_MOVIES_URL;

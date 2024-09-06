@@ -2,8 +2,10 @@ import { Button, List, TaskBar } from '@react95/core';
 // import { useClippy } from '@react95/clippy';
 import { ReaderClosed, WindowsExplorer } from '@react95/icons';
 import './App.css';
+import { useGetMoviesQuery } from '@services/movies';
 
 function App() {
+  const { data } = useGetMoviesQuery();
   // const { clippy } = useClippy();
 
   // useEffect(() => {
@@ -11,6 +13,8 @@ function App() {
   //     clippy.speak('Hello!', false);
   //   }
   // }, [clippy]);
+
+  console.log({ data });
 
   return (
     <>

@@ -1,0 +1,14 @@
+query GetMovies {
+  movies {
+    nodes {
+      id
+      title
+      posterUrl
+    }
+    pagination {
+      totalPages
+      page
+      perPage
+    }
+  }
+}

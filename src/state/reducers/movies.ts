@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
+import { Movie } from '@services/movies';
 
 interface MoviesState {
-  movies: [];
+  selectedMovies: Movie[];
 }
 
 const initialState: MoviesState = {
-  movies: [],
+  selectedMovies: [],
 };
 
 export const moviesSlice = createSlice({
