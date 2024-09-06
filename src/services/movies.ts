@@ -4,6 +4,7 @@ import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
 import { selectAuth } from '@state/reducers/auth';
 import { RootState } from '@state/store';
 import GetMovies from '@graphql/movies.graphql';
+import GetGenres from '@graphql/genres.graphql';
 
 import { MOVIES_URL } from './constants';
 
@@ -85,7 +86,12 @@ export const moviesApi = createApi({
         };
       },
     }),
+    getGenres: builder.query<Genre[], void>({
+      query: () => ({
+        document: GetGenres,
+      }),
+    }),
   }),
 });
 
-export const { useGetMoviesQuery } = moviesApi;
+export const { useGetMoviesQuery, useGetGenresQuery } = moviesApi;

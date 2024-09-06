@@ -1,0 +1,8 @@
+query GetGenres {
+  genres {
+    nodes {
+      title
+      id
+    }
+  }
+}
