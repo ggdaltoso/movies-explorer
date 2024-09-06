@@ -35,7 +35,7 @@ export type Movie = {
   genres: GenreWithoutMovies[];
 };
 
-export type MoviePreview = { title: string; id: string };
+export type MoviePreview = { title: string; id: string; posterUrl: string };
 
 export type Pagination = {
   totalPages: number;
