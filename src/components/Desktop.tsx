@@ -2,13 +2,15 @@ import { useMemo, useState } from 'react';
 import { Frame, List, Modal, TaskBar, Tree } from '@react95/core';
 import {
   Camera,
+  HelpBook,
+  Mmsys99,
   Mplayer11,
-  ReaderClosed,
   Wangimg130,
-  WindowsExplorer,
 } from '@react95/icons';
 import { useGetGenresQuery, useGetMoviesQuery } from '@services/movies';
 import { Shortcut } from './Shortcut';
+import { useSelector } from 'react-redux';
+import { selectAuth } from '@state/reducers/auth';
 
 const getModalDimensions = () => {
   const rootElement = document.getElementById('root') as HTMLElement;
@@ -28,8 +30,13 @@ const getModalDimensions = () => {
 };
 
 export const Desktop = () => {
-  const { data } = useGetMoviesQuery();
-  const { data: genres } = useGetGenresQuery();
+  const auth = useSelector(selectAuth);
+  const { data } = useGetMoviesQuery(undefined, {
+    skip: !auth.token,
+  });
+  const { data: genres } = useGetGenresQuery(undefined, {
+    skip: !auth.token,
+  });
 
   const [moviesExplorerModal, setMoviesExplorerModal] = useState(true);
 
@@ -43,8 +50,6 @@ export const Desktop = () => {
     setMoviesExplorerModal(false);
   };
 
-  console.log({ genres });
-
   const treeData = useMemo(() => {
     if (data?.movies && genres) {
       const allMovies = data?.movies.map((movie, index) => {
@@ -55,13 +60,24 @@ export const Desktop = () => {
         };
       });
 
-      // const allGenres = genres
+      const allGenres = genres.genres.map((genre, index) => {
+        return {
+          id: index,
+          label: genre.title,
+          icon: <Mmsys99 variant="16x16_4" />,
+        };
+      });
 
       return [
         {
           id: 0,
           label: 'Movies',
           children: allMovies,
+        },
+        {
+          id: 1,
+          label: 'Genres',
+          children: allGenres,
         },
       ];
     }
@@ -73,8 +89,8 @@ export const Desktop = () => {
     <>
       <div className="w-full h-full p-2 grid place-items-start">
         <Shortcut
-          title="ThisTube"
-          icon={<Camera variant="32x32_4" />}
+          title="Movies Explorer"
+          icon={<HelpBook variant="32x32_4" />}
           onDoubleClick={showMoviesExplorer}
         />
       </div>
@@ -83,7 +99,7 @@ export const Desktop = () => {
         <Modal
           onClose={closeMoviesExplorer}
           title="Movies Explorer"
-          icon={<Camera variant="16x16_4" />}
+          icon={<HelpBook variant="16x16_4" />}
           defaultPosition={{
             x: dimmensions.x,
             y: dimmensions.y,
@@ -94,29 +110,29 @@ export const Desktop = () => {
             w={`${dimmensions.width}px`}
             h={`${dimmensions.height}px`}
           >
-            <Frame boxShadow="$in" bg="white" w="40%" mr="$6">
+            <Frame boxShadow="$in" bg="white" w="40%" mr="$6" overflow="auto">
               {treeData && (
                 <Tree
                   data={treeData}
                   root={{
                     id: 0,
-                    label: 'ThisTube',
+                    label: 'Movies Explorer',
                     icon: <Camera variant="16x16_4" />,
                   }}
                 />
               )}
             </Frame>
-            <Frame boxShadow="$in" bg="white" w="100%" overflow="auto">
+            <Frame boxShadow="$in" bg="white" w="100%" overflow="auto" p="$4">
               <Frame
                 as="ul"
                 display="grid"
-                gridTemplateColumns="repeat(auto-fit, minmax(80px, 1fr))"
+                gridTemplateColumns="repeat(auto-fill, minmax(80px, 1fr))"
                 justifyItems="center"
               >
                 {data?.movies.map((movie) => {
                   const icon = movie.posterUrl ? (
                     <img
-                      alt={`The poster of ${movie.title}`}
+                      alt={`The poster of '${movie.title}' movie`}
                       src={movie.posterUrl}
                       className="h-20"
                     />
@@ -142,11 +158,11 @@ export const Desktop = () => {
       <TaskBar
         list={
           <List>
-            <List.Item icon={<ReaderClosed variant="32x32_4" />}>
-              Local Disk (C:)
-            </List.Item>
-            <List.Item icon={<WindowsExplorer variant="32x32_4" />}>
-              Windows Explorer
+            <List.Item
+              icon={<HelpBook variant="32x32_4" />}
+              onClick={showMoviesExplorer}
+            >
+              Movies Explorer
             </List.Item>
           </List>
         }
