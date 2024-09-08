@@ -1,19 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { Movie } from '@services/movies';
+import { MoviePreview, moviesApi } from '@services/movies';
 
 interface MoviesState {
-  selectedMovies: Movie[];
+  movies: MoviePreview[];
 }
 
 const initialState: MoviesState = {
-  selectedMovies: [],
+  movies: [],
 };
 
 export const moviesSlice = createSlice({
   name: 'movies',
   initialState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      moviesApi.endpoints.getMovies.matchFulfilled,
+      (state, action) => {
+        state.movies = [...state.movies, ...action.payload.movies];
+      },
+    );
+  },
 });
 
 export const selectMovies = (state: RootState) => state.movies;

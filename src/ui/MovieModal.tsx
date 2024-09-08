@@ -49,6 +49,10 @@ export const MovieModal: FC<
       title={movie.title}
       onClose={onClose}
       icon={<Actmovie303 variant="16x16_4" />}
+      defaultPosition={{
+        x: 20,
+        y: 20,
+      }}
     >
       <Frame display="grid" gap="$6" gridTemplateColumns="200px 1fr">
         <Frame

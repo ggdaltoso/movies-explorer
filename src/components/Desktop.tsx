@@ -1,17 +1,19 @@
-import { useMemo, useState } from 'react';
 import { Frame, List, Modal, TaskBar, Tree } from '@react95/core';
+import { TreeProps } from '@react95/core/Tree';
 import { Camera, HelpBook, Mmsys99, Mplayer11 } from '@react95/icons';
 import {
   MoviePreview,
   useGetGenresQuery,
   useGetMoviesQuery,
 } from '@services/movies';
-import { Shortcut } from './Shortcut';
-import { useSelector } from 'react-redux';
 import { selectAuth } from '@state/reducers/auth';
+import { selectMovies } from '@state/reducers/movies';
+import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Pagination } from 'ui/Pagination';
 import { MovieModal } from '../ui/MovieModal';
 import { MovieThumbnail } from '../ui/MovieThumbnail';
+import { Shortcut } from './Shortcut';
 
 const getModalDimensions = () => {
   const rootElement = document.getElementById('root') as HTMLElement;
@@ -38,6 +40,8 @@ export const Desktop = () => {
   >();
 
   const auth = useSelector(selectAuth);
+  const moviesState = useSelector(selectMovies);
+
   const { data } = useGetMoviesQuery(
     {
       pagination: { page, perPage },
@@ -65,39 +69,46 @@ export const Desktop = () => {
   };
 
   const treeData = useMemo(() => {
-    if (data?.movies && genres) {
-      const allMovies = data?.movies.map((movie, index) => {
+    let allMovies: TreeProps['data'] = [];
+
+    if (moviesState.movies.length > 0) {
+      allMovies = moviesState.movies.map((movie, index) => {
         return {
           id: index,
           label: movie.title,
           icon: <Mplayer11 variant="16x16_4" />,
+          onClick: () => {
+            setSelectedMovie(movie);
+          },
         };
       });
+    }
 
-      const allGenres = genres.genres.map((genre, index) => {
+    let allGenres: TreeProps['data'] = [];
+
+    if (genres) {
+      allGenres = genres.genres.map((genre, index) => {
         return {
           id: index,
           label: genre.title,
           icon: <Mmsys99 variant="16x16_4" />,
         };
       });
-
-      return [
-        {
-          id: 0,
-          label: 'Movies',
-          children: allMovies,
-        },
-        {
-          id: 1,
-          label: 'Genres',
-          children: allGenres,
-        },
-      ];
     }
 
-    return [];
-  }, [data?.movies, genres]);
+    return [
+      {
+        id: 0,
+        label: 'Movies',
+        children: allMovies,
+      },
+      {
+        id: 1,
+        label: 'Genres',
+        children: allGenres,
+      },
+    ];
+  }, [moviesState?.movies, genres]);
 
   return (
     <>
