@@ -1,5 +1,5 @@
-query GetMovies {
-  movies {
+query GetMovies($pagination: PaginationInput, $where: MovieFilterInput) {
+  movies(pagination: $pagination, where: $where) {
     nodes {
       id
       title

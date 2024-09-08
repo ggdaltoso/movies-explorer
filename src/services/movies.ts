@@ -80,9 +80,13 @@ export const moviesApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getMovies: builder.query<MovieConnection, void>({
-      query: () => ({
+    getMovies: builder.query<
+      MovieConnection,
+      { pagination: Pick<Pagination, 'page' | 'perPage'> }
+    >({
+      query: (variables) => ({
         document: GetMovies,
+        variables,
       }),
       transformResponse: (response: MovieQueryResult) => {
         const { nodes, pagination } = response.movies;

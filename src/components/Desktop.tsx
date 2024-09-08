@@ -1,5 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Frame, List, Modal, TaskBar, Tree } from '@react95/core';
+import {
+  Button,
+  Dropdown,
+  Frame,
+  List,
+  Modal,
+  TaskBar,
+  Tree,
+} from '@react95/core';
 import {
   Camera,
   HelpBook,
@@ -31,9 +39,16 @@ const getModalDimensions = () => {
 
 export const Desktop = () => {
   const auth = useSelector(selectAuth);
-  const { data } = useGetMoviesQuery(undefined, {
-    skip: !auth.token,
-  });
+  const [page, selectPage] = useState(1);
+  const [perPage, selectPerPage] = useState(25);
+  const { data } = useGetMoviesQuery(
+    {
+      pagination: { page, perPage },
+    },
+    {
+      skip: !auth.token,
+    },
+  );
   const { data: genres } = useGetGenresQuery(undefined, {
     skip: !auth.token,
   });
@@ -124,7 +139,14 @@ export const Desktop = () => {
                 />
               )}
             </Frame>
-            <Frame boxShadow="$in" bg="white" w="100%" overflow="auto" p="$4">
+            <Frame
+              boxShadow="$in"
+              bg="white"
+              h="100%"
+              w="100%"
+              overflow="auto"
+              p="$4"
+            >
               <Frame
                 as="ul"
                 display="grid"
@@ -151,8 +173,64 @@ export const Desktop = () => {
               </Frame>
             </Frame>
           </Frame>
-          <Frame boxShadow="$in" p="$4" mt="$6">
-            Showing {data?.movies.length} movies
+          <Frame
+            boxShadow="$in"
+            p="$4"
+            mt="$6"
+            display="flex"
+            justifyContent="space-between"
+          >
+            <Frame display="flex" gap="$6" alignItems="center">
+              Showing
+              <Frame className="[&>*]:w-14">
+                <Dropdown
+                  options={['25', '50', 100]}
+                  value={perPage}
+                  onChange={({ target }) => {
+                    const { value } = target as HTMLInputElement;
+                    selectPerPage(Number(value));
+                  }}
+                />
+              </Frame>
+              movies
+            </Frame>
+            {/* chevron left */}
+            <Frame display="flex">
+              <Frame display="flex" alignItems="center" mr="$6">
+                Page {data?.pagination.page} of {data?.pagination.totalPages}
+              </Frame>
+              <Button
+                size="$20"
+                p="$0"
+                pl="$4"
+                pt="$2"
+                title="Go to previous page"
+                className="active:p-0 active:pl-[4px] active:pt-[2px]"
+                onClick={() => selectPage((currentPage) => currentPage - 1)}
+              >
+                <svg height="16" width="16" viewBox="0 0 32 32">
+                  <g transform="rotate(90 13 13)">
+                    <polygon points="6,10 20,10 13,17" />
+                  </g>
+                </svg>
+              </Button>
+              {/* chevron right */}
+              <Button
+                size="$20"
+                p="$0"
+                pl="$4"
+                pt="$2"
+                title="Go to next page"
+                className="active:p-0 active:pl-[4px] active:pt-[2px]"
+                onClick={() => selectPage((currentPage) => currentPage + 1)}
+              >
+                <svg height="16" width="16" viewBox="0 0 32 32">
+                  <g transform="rotate(270 13 13)">
+                    <polygon points="6,10 20,10 13,17" />
+                  </g>
+                </svg>
+              </Button>
+            </Frame>
           </Frame>
         </Modal>
       )}
