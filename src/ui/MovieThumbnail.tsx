@@ -1,7 +1,7 @@
 import { Wangimg130 } from '@react95/icons';
 import { MoviePreview } from '@services/movies';
 import { FC } from 'react';
-import { Shortcut } from '../components/Shortcut';
+import { Shortcut } from './Shortcut';
 
 export const MovieThumbnail: FC<{
   movie: MoviePreview;

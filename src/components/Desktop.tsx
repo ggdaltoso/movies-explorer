@@ -8,13 +8,13 @@ import {
 } from '@services/movies';
 import { selectAuth } from '@state/reducers/auth';
 import { selectMovies } from '@state/reducers/movies';
+import { MovieModal } from '@ui/MovieModal';
+import { MovieThumbnail } from '@ui/MovieThumbnail';
+import { Shortcut } from '@ui/Shortcut';
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Pagination } from 'ui/Pagination';
 import { useDebounce } from 'use-debounce';
-import { MovieModal } from '../ui/MovieModal';
-import { MovieThumbnail } from '../ui/MovieThumbnail';
-import { Shortcut } from './Shortcut';
 
 const getModalDimensions = () => {
   const rootElement = document.getElementById('root') as HTMLElement;
