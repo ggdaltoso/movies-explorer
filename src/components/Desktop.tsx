@@ -1,17 +1,17 @@
 import { useMemo, useState } from 'react';
 import { Frame, List, Modal, TaskBar, Tree } from '@react95/core';
+import { Camera, HelpBook, Mmsys99, Mplayer11 } from '@react95/icons';
 import {
-  Camera,
-  HelpBook,
-  Mmsys99,
-  Mplayer11,
-  Wangimg130,
-} from '@react95/icons';
-import { useGetGenresQuery, useGetMoviesQuery } from '@services/movies';
+  MoviePreview,
+  useGetGenresQuery,
+  useGetMoviesQuery,
+} from '@services/movies';
 import { Shortcut } from './Shortcut';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '@state/reducers/auth';
 import { Pagination } from 'ui/Pagination';
+import { MovieModal } from '../ui/MovieModal';
+import { MovieThumbnail } from '../ui/MovieThumbnail';
 
 const getModalDimensions = () => {
   const rootElement = document.getElementById('root') as HTMLElement;
@@ -31,9 +31,13 @@ const getModalDimensions = () => {
 };
 
 export const Desktop = () => {
-  const auth = useSelector(selectAuth);
   const [page, selectPage] = useState(1);
   const [perPage, selectPerPage] = useState(25);
+  const [selectedMovie, setSelectedMovie] = useState<
+    MoviePreview | undefined
+  >();
+
+  const auth = useSelector(selectAuth);
   const { data } = useGetMoviesQuery(
     {
       pagination: { page, perPage },
@@ -147,20 +151,12 @@ export const Desktop = () => {
                 justifyItems="center"
               >
                 {data?.movies.map((movie) => {
-                  const icon = movie.posterUrl ? (
-                    <img
-                      alt={`The poster of '${movie.title}' movie`}
-                      src={movie.posterUrl}
-                      className="h-20"
-                    />
-                  ) : (
-                    <Wangimg130 variant="32x32_4" className="h-20" />
-                  );
-
                   return (
-                    <li key={movie.id}>
-                      <Shortcut title={movie.title} icon={icon} />
-                    </li>
+                    <MovieThumbnail
+                      movie={movie}
+                      key={movie.id}
+                      onSelectMovie={() => setSelectedMovie(movie)}
+                    />
                   );
                 })}
               </Frame>
@@ -176,6 +172,13 @@ export const Desktop = () => {
             onPerPageChange={selectPerPage}
           />
         </Modal>
+      )}
+
+      {selectedMovie && (
+        <MovieModal
+          id={selectedMovie.id}
+          onClose={() => setSelectedMovie(undefined)}
+        />
       )}
 
       <TaskBar

@@ -4,6 +4,7 @@ import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
 import { selectAuth } from '@state/reducers/auth';
 import { RootState } from '@state/store';
 import GetMovies from '@graphql/movies.graphql';
+import GetMovie from '@graphql/movie.graphql';
 import GetGenres from '@graphql/genres.graphql';
 
 import { MOVIES_URL } from './constants';
@@ -39,9 +40,13 @@ export type Pagination = {
   perPage: number;
 };
 
-export type MovieConnection = {
+export type MoviesConnection = {
   movies: MoviePreview[];
   pagination: Pagination;
+};
+
+export type MovieConnection = {
+  movie: Movie;
 };
 
 export type GenreConnection = {
@@ -49,11 +54,15 @@ export type GenreConnection = {
   pagination: Pagination;
 };
 
-type MovieQueryResult = {
+type MoviesQueryResult = {
   movies: {
     nodes: MoviePreview[];
     pagination: Pagination;
   };
+};
+
+type MovieQueryResult = {
+  movie: Movie;
 };
 
 type GenreQueryResult = {
@@ -81,19 +90,32 @@ export const moviesApi = createApi({
   }),
   endpoints: (builder) => ({
     getMovies: builder.query<
-      MovieConnection,
+      MoviesConnection,
       { pagination: Pick<Pagination, 'page' | 'perPage'> }
     >({
       query: (variables) => ({
         document: GetMovies,
         variables,
       }),
-      transformResponse: (response: MovieQueryResult) => {
+      transformResponse: (response: MoviesQueryResult) => {
         const { nodes, pagination } = response.movies;
 
         return {
           movies: nodes,
           pagination,
+        };
+      },
+    }),
+    getMovie: builder.query<MovieConnection, Pick<Movie, 'id'>>({
+      query: (variables) => ({
+        document: GetMovie,
+        variables,
+      }),
+      transformResponse: (response: MovieQueryResult) => {
+        const { movie } = response;
+
+        return {
+          movie,
         };
       },
     }),
@@ -113,4 +135,5 @@ export const moviesApi = createApi({
   }),
 });
 
-export const { useGetMoviesQuery, useGetGenresQuery } = moviesApi;
+export const { useGetMoviesQuery, useGetGenresQuery, useGetMovieQuery } =
+  moviesApi;

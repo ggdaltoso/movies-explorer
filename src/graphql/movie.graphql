@@ -1,0 +1,21 @@
+query GetMovie($id: ID!) {
+  movie(id: $id) {
+    id
+    title
+    posterUrl
+    summary
+    duration
+    directors
+    mainActors
+    datePublished
+    rating
+    ratingValue
+    bestRating
+    worstRating
+    writers
+    genres {
+      id
+      title
+    }
+  }
+}
