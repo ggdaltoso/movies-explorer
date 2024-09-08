@@ -19,6 +19,8 @@ export const Pagination: FC<{
   onPerPageChange: (perPage: number) => void;
   currentPage: number;
   totalPages?: number;
+  search?: string;
+  genre?: string;
 }> = ({
   onPrevious,
   onNext,
@@ -27,6 +29,8 @@ export const Pagination: FC<{
   perPageOptions,
   currentPage,
   totalPages,
+  search,
+  genre,
 }) => {
   return (
     <Frame
@@ -37,7 +41,7 @@ export const Pagination: FC<{
       justifyContent="space-between"
     >
       <Frame display="flex" gap="$6" alignItems="center">
-        Showing
+        Showing up to
         <Frame className="[&>*]:w-14">
           <Dropdown
             options={perPageOptions}
@@ -49,12 +53,14 @@ export const Pagination: FC<{
           />
         </Frame>
         movies
+        {search && <>. Filtered by "{search}"</>}
+        {genre && <>. Including "{genre}" genre.</>}
       </Frame>
-      {/* chevron left */}
       <Frame display="flex">
         <Frame display="flex" alignItems="center" mr="$6">
           Page {currentPage} of {totalPages}
         </Frame>
+        {/* chevron left */}
         <Button
           size="$20"
           p="$0"

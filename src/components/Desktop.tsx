@@ -1,4 +1,4 @@
-import { Frame, List, Modal, TaskBar, Tree } from '@react95/core';
+import { Frame, Input, List, Modal, TaskBar, Tree } from '@react95/core';
 import { TreeProps } from '@react95/core/Tree';
 import { Camera, HelpBook, Mmsys99, Mplayer11 } from '@react95/icons';
 import {
@@ -11,6 +11,7 @@ import { selectMovies } from '@state/reducers/movies';
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Pagination } from 'ui/Pagination';
+import { useDebounce } from 'use-debounce';
 import { MovieModal } from '../ui/MovieModal';
 import { MovieThumbnail } from '../ui/MovieThumbnail';
 import { Shortcut } from './Shortcut';
@@ -35,6 +36,10 @@ const getModalDimensions = () => {
 export const Desktop = () => {
   const [page, selectPage] = useState(1);
   const [perPage, selectPerPage] = useState(25);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch] = useDebounce(search, 1000);
+
+  const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
   const [selectedMovie, setSelectedMovie] = useState<
     MoviePreview | undefined
   >();
@@ -45,6 +50,10 @@ export const Desktop = () => {
   const { data } = useGetMoviesQuery(
     {
       pagination: { page, perPage },
+      where: {
+        search: debouncedSearch,
+        genre: selectedGenre,
+      },
     },
     {
       skip: !auth.token,
@@ -88,10 +97,24 @@ export const Desktop = () => {
 
     if (genres) {
       allGenres = genres.genres.map((genre, index) => {
+        const active = `bg-r95-headerBackground text-r95-headerText p-1 border border-dashed`;
+        const isCurrentGenre = selectedGenre === genre.title;
+
         return {
           id: index,
-          label: genre.title,
+          label: (
+            <span className={isCurrentGenre ? active : ''}>{genre.title}</span>
+          ) as unknown as string, // a little workaround since the label is not a string
           icon: <Mmsys99 variant="16x16_4" />,
+          onClick: () => {
+            if (isCurrentGenre) {
+              setSelectedGenre(undefined);
+
+              return;
+            }
+
+            setSelectedGenre(genre.title);
+          },
         };
       });
     }
@@ -104,11 +127,11 @@ export const Desktop = () => {
       },
       {
         id: 1,
-        label: 'Genres',
+        label: 'Filter by Genre',
         children: allGenres,
       },
     ];
-  }, [moviesState?.movies, genres]);
+  }, [moviesState.movies, genres, selectedGenre]);
 
   return (
     <>
@@ -130,6 +153,11 @@ export const Desktop = () => {
             y: dimmensions.y,
           }}
         >
+          <Input
+            mb="$4"
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search for a movie ..."
+          />
           <Frame
             className="flex"
             w={`${dimmensions.width}px`}
@@ -181,6 +209,8 @@ export const Desktop = () => {
             onPrevious={() => selectPage(page - 1)}
             onNext={() => selectPage(page + 1)}
             onPerPageChange={selectPerPage}
+            search={debouncedSearch}
+            genre={selectedGenre}
           />
         </Modal>
       )}

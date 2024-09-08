@@ -91,7 +91,13 @@ export const moviesApi = createApi({
   endpoints: (builder) => ({
     getMovies: builder.query<
       MoviesConnection,
-      { pagination: Pick<Pagination, 'page' | 'perPage'> }
+      {
+        pagination?: Pick<Pagination, 'page' | 'perPage'>;
+        where: {
+          search?: string;
+          genre?: string;
+        };
+      }
     >({
       query: (variables) => ({
         document: GetMovies,
