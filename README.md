@@ -1,50 +1,71 @@
-# React + TypeScript + Vite
+# Movies Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+Movies Explorer is a web application built with React, TypeScript, and Vite. It provides a minimal setup for exploring movies, with features such as movie thumbnails, pagination, and a desktop-like interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+You can check it online at [movies-explorer.ggdaltoso.dev](https://movies-explorer.ggdaltoso.dev/)
 
-## Expanding the ESLint configuration
+## Technical Choices
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Frontend Framework
 
-- Configure the top-level `parserOptions` property like this:
+We chose React as our frontend framework due to its popularity, flexibility, and large community support. React allows us to build reusable UI components and manage state changes efficiently.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Type System
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+We opted for TypeScript as our type system to ensure type safety and catch errors early in the development process. TypeScript also helps with code maintainability and scalability.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Build Tool
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+Vite is our build tool of choice, providing fast and efficient development and production builds. Vite's Hot Module Replacement (HMR) feature enables rapid development and reduces the need for manual reloads.
+
+### UI Components
+
+We utilize the [@react95/core](https://github.com/React95/React95) library to create a desktop-like interface, providing a unique and engaging user experience. The library offers a range of pre-built components, such as frames, inputs, lists, and more.
+
+### State Management
+
+We employ React Redux + Redux toolkit for state management, allowing us to manage global state and props efficiently. Redux provides a predictable and scalable way to manage state changes.
+
+### Icons and Assets
+
+We use the @react95/icons library to include a range of icons and assets, enhancing the overall visual appeal of the application.
+
+### Folder Structure
+
+Our project is organized into the following folders:
+
+- `src`: Contains the main application code, including components, containers, and utilities.
+  - `components`: Our molecules/organisms components
+  - `ui`: Where our atoms live in. Contains UI-related components and utilities.
+  - `services`: Houses API services and data fetching logic.
+  - `state`: Manages global state and reducers.
+
+### Configuration
+
+Our project uses the following configuration files:
+
+`tailwind.config.js`: Configures Tailwind CSS for styling.
+`tsconfig.json`: Configures TypeScript settings and compiler options.
+`vite.config.js`: Configures Vite build and development settings.
+`README.md`: This file, providing an overview of the project and technical choices.
+
+## Automated Build and Publish Process
+
+This project uses GitHub Actions to automate the build and publish process. The workflow is defined in the `.github` folder at the project's root. The workflow includes the following steps:
+
+1.  Install dependencies
+2.  Build the application using TSC + Vite
+3.  Publish the application to a GH Pages
+
+For more details on the automated build and publish process, please refer to the .github folder.
+
+## Contributing
+
+To contribute to this project, please follow these steps:
+
+1.  Clone the repository: `git clone https://github.com/ggdaltoso/movies-explorer.git`
+2.  Install dependencies: `npm install`
+3.  Start the development server: `npm run dev`
+4.  Make changes and submit a pull request.
