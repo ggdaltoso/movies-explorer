@@ -1,4 +1,7 @@
-# Movies Explorer
+<p align="center">  
+  <img src="public/help-book.svg?raw=true" width="120" />  
+  <h1 align="center">Movies Explorer</h1>
+</p>
 
 ## Overview
 
@@ -49,7 +52,7 @@ Our project uses the following configuration files:
 `tailwind.config.js`: Configures Tailwind CSS for styling.
 `tsconfig.json`: Configures TypeScript settings and compiler options.
 `vite.config.js`: Configures Vite build and development settings.
-`README.md`: This file, providing an overview of the project and technical choices.
+`README.md`: This file, provides an overview of the project and technical choices.
 
 ## Automated Build and Publish Process
 
@@ -57,7 +60,7 @@ This project uses GitHub Actions to automate the build and publish process. The 
 
 1.  Install dependencies
 2.  Build the application using TSC + Vite
-3.  Publish the application to a GH Pages
+3.  Publish the application to GH Pages
 
 For more details on the automated build and publish process, please refer to the .github folder.
 
