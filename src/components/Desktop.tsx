@@ -63,9 +63,7 @@ export const Desktop = () => {
     skip: !auth.token,
   });
 
-  const [moviesExplorerModal, setMoviesExplorerModal] = useState(
-    import.meta.env.DEV,
-  );
+  const [moviesExplorerModal, setMoviesExplorerModal] = useState(false);
 
   const dimmensions = useMemo(getModalDimensions, []);
 
